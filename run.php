@@ -15,7 +15,11 @@ try {
     if (!isset($arguments["data"])) {
         throw new UserException('Data folder not set.');
     }
-    $config = Yaml::parse(file_get_contents($arguments["data"] . "/config.yml"));
+    if (file_exists($arguments["data"] . "/config.json")) {
+        $config = json_decode(file_get_contents($arguments["data"] . "/config.json"), true);
+    } else {
+        $config = Yaml::parse(file_get_contents($arguments["data"] . "/config.yml"));
+    }
     $config['parameters']['data_dir'] = $arguments['data'];
 
     $app = new Application($config);
