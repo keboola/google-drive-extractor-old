@@ -91,10 +91,10 @@ jobs:
         name: Run tests
         run: |
           docker run \
-          -e CLIENT_ID
-          -e CLIENT_SECRET
-          -e ACCESS_TOKEN
-          -e REFRESH_TOKEN
+          -e CLIENT_ID \
+          -e CLIENT_SECRET \
+          -e ACCESS_TOKEN \
+          -e REFRESH_TOKEN \
           ${{env.APP_IMAGE}} \
           composer ci
 
