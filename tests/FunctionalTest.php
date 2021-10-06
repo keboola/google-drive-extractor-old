@@ -147,7 +147,7 @@ class FunctionalTest extends BaseTest
         );
     }
 
-    private function runProcess($configType = 'yml'): Process
+    private function runProcess(string $configType = 'yml'): Process
     {
         $fs = new Filesystem();
         $fs->remove($this->dataPath);
