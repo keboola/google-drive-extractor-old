@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\GoogleDriveExtractor\Tests;
 
+use Exception;
 use Keboola\Csv\CsvWriter;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
@@ -16,6 +17,20 @@ class FunctionalTest extends BaseTest
     public function testRun(): void
     {
         $process = $this->runProcess();
+        $this->assertEquals(0, $process->getExitCode(), $process->getErrorOutput());
+
+        $fileId = $this->config['parameters']['sheets'][0]['fileId'];
+        $sheetId = $this->config['parameters']['sheets'][0]['sheetId'];
+
+        $this->assertFileEqualsIgnoringCase(
+            $this->testFilePath,
+            $this->dataPath . '/out/tables/' . $this->getOutputFileName($fileId, $sheetId)
+        );
+    }
+
+    public function testJsonRun(): void
+    {
+        $process = $this->runProcess('json');
         $this->assertEquals(0, $process->getExitCode(), $process->getErrorOutput());
 
         $fileId = $this->config['parameters']['sheets'][0]['fileId'];
@@ -132,15 +147,27 @@ class FunctionalTest extends BaseTest
         );
     }
 
-    private function runProcess(): Process
+    private function runProcess($configType = 'yml'): Process
     {
         $fs = new Filesystem();
         $fs->remove($this->dataPath);
         $fs->mkdir($this->dataPath);
         $fs->mkdir($this->dataPath . '/out/tables');
 
-        $yaml = new Yaml();
-        file_put_contents($this->dataPath . '/config.yml', $yaml->dump($this->config));
+        switch ($configType) {
+            case 'json':
+                file_put_contents(
+                    $this->dataPath . '/config.json',
+                    json_encode($this->config)
+                );
+                break;
+            case 'yml':
+                $yaml = new Yaml();
+                file_put_contents($this->dataPath . '/config.yml', $yaml->dump($this->config));
+                break;
+            default:
+                throw new Exception('Unsupported config type');
+        }
 
         $process = Process::fromShellCommandline(sprintf('php run.php --data=%s', $this->dataPath));
         $process->run();
