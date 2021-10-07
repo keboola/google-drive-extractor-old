@@ -80,7 +80,11 @@ class Output
             'incremental' => false,
         ];
 
-        return (bool) file_put_contents($outFilename, Yaml::dump($manifestData));
+        if (file_exists($this->dataDir . '/config.json')) {
+            return (bool) file_put_contents($outFilename, json_encode($manifestData));
+        } else {
+            return (bool) file_put_contents($outFilename, Yaml::dump($manifestData));
+        }
     }
 
     protected function normalizeCsvHeader(array $header): array
