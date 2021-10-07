@@ -1,0 +1,12 @@
+/build/
+/vendor/
+/data/
+/tests/data/out
+.idea/
+.DS_Store
+.env
+.phpunit.result.cache
+composer.phar
+tests.sh
+tokens.php
+run.sh
