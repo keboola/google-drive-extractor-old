@@ -26,6 +26,19 @@ class FunctionalTest extends BaseTest
             $this->testFilePath,
             $this->dataPath . '/out/tables/' . $this->getOutputFileName($fileId, $sheetId)
         );
+
+        $expectedManifest = <<<YAML
+destination: in.c-google-drive-extractor-testcfg1.titanic
+incremental: false
+
+YAML;
+
+        $this->assertEquals(
+            $expectedManifest,
+            file_get_contents(
+                $this->dataPath . '/out/tables/' . $this->getOutputFileName($fileId, $sheetId) . '.manifest'
+            )
+        );
     }
 
     public function testJsonRun(): void
@@ -39,6 +52,13 @@ class FunctionalTest extends BaseTest
         $this->assertFileEqualsIgnoringCase(
             $this->testFilePath,
             $this->dataPath . '/out/tables/' . $this->getOutputFileName($fileId, $sheetId)
+        );
+
+        $this->assertEquals(
+            '{"destination":"in.c-google-drive-extractor-testcfg1.titanic","incremental":false}',
+            file_get_contents(
+                $this->dataPath . '/out/tables/' . $this->getOutputFileName($fileId, $sheetId) . '.manifest'
+            )
         );
     }
 
