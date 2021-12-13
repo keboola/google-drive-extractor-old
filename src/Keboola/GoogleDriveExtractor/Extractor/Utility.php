@@ -14,7 +14,7 @@ class Utility
         $string = preg_replace('/[^A-Za-z0-9_\s]/', '', (string) $string);
         $string = trim((string) $string);
         $string = str_replace(' ', '_', $string);
-        if (strlen($string) < 2) {
+        if (empty($string)) {
             $string = 'empty';
         }
         return $string;
